@@ -8,10 +8,10 @@
 <body style="background-color: #f2f2f2">
     <div>
         <ul class="layui-nav">
-            <li class="layui-nav-item" style="margin-left: 20%"><a href="">在售商品</a></li>
-            <li class="layui-nav-item"><a href="">个人中心</a></li>
+            <li class="layui-nav-item" style="margin-left: 20%"><a href="/index">在售商品</a></li>
+            <li class="layui-nav-item"><a href="/homepage">个人中心</a></li>
             <li class="layui-nav-item">
-                <a href=""><img src="//t.cn/RCzsdCq" class="layui-nav-img">未登录</a>
+                <a href=""><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">${name}</a>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">修改信息</a></dd>
                     <dd><a href="javascript:;">安全管理</a></dd>
@@ -21,31 +21,32 @@
         </ul>
     </div>
     <div  class="layui-container">
-        <form class="layui-form" name="myform"  style="margin-left: 20%; margin-right: 20%; margin-top: 12% ">
+        <form class="layui-form"  style="margin-left: 20%; margin-right: 20%; margin-top: 12% " action="register.jspy">
             <div class="layui-form-item">
-                <label class="layui-form-label" name="username">用户名</label>
+                <label class="layui-form-label" name="">用户名</label>
                 <div class="layui-input-block">
-                    <input type="text" name="" placeholder="请输入" lay-verify="required|username" autocomplete="off" class="layui-input">
+                    <input type="text" name="name" placeholder="请输入" lay-verify="required|username" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label" name="mail">邮箱</label>
+                <label class="layui-form-label" name="">邮箱</label>
                 <div class="layui-input-block">
-                    <input type="text" name="" placeholder="请输入" lay-verify="required|mail" autocomplete="off" class="layui-input">
+                    <input type="text" name="mail" placeholder="${mailMsg}" lay-verify="required|mail" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label" name="pass">密码</label>
+                <label class="layui-form-label" name="">密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="" placeholder="请输入" lay-verify="required|pass" autocomplete="off" class="layui-input">
+                    <input type="password" name="pass" placeholder="${passMsg}" lay-verify="required|pass" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label" name="pass2">重复密码</label>
+                <label class="layui-form-label" name="">重复密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="" placeholder="请输入" lay-verify="required|pass2" autocomplete="off" class="layui-input">
+                    <input type="password" name="pass2" placeholder="${passMsg}" lay-verify="required|pass2" autocomplete="off" class="layui-input">
                 </div>
             </div>
+            <!--
             <div class="layui-form-item">
                 <label class="layui-form-label">下拉选择框</label>
                 <div class="layui-input-block">
@@ -55,16 +56,17 @@
                     </select>
                 </div>
             </div>
+            -->
             <div class="layui-form-item">
                 <label class="layui-form-label">性别</label>
                 <div class="layui-input-block">
-                    <input type="radio" name="sex" value="0" title="男">
-                    <input type="radio" name="sex" value="1" title="女" checked>
+                    <input type="radio" name="sex" value="1" title="男">
+                    <input type="radio" name="sex" value="0" title="女" checked>
                 </div>
             </div>
             <div class="layui-form-item">
                 <div class="layui-input-block">
-                    <button class="layui-btn" lay-submit="" lay-filter="*">立即提交</button>
+                    <button class="layui-btn" lay-submit="" lay-filter="*">注册</button>
                     <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>
@@ -82,7 +84,7 @@
                     return '用户名长度至少为4'
             },
             pass:[
-                /^[\S]{6,12}$/, '密码必须6到12位，且不能出现空格'
+                /^[\S]{6,18}$/, '密码必须6到18位，且不能出现空格'
             ],
             pass2: function (value) {
                 alert("1"+"2");

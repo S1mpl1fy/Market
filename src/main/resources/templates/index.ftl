@@ -3,20 +3,26 @@
 <head>
     <meta charset="utf-8">
     <title>在售商品</title>
-    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
 </head>
 <body style="background-color: #f2f2f2">
 <div>
     <ul class="layui-nav">
-        <li class="layui-nav-item" style="margin-left: 20%"><a href="">在售商品</a></li>
-        <li class="layui-nav-item"><a href="">个人中心</a></li>
+        <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/index">在售商品</a></li>
+        <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
         <li class="layui-nav-item"><a href="">发布商品</a></li>
         <li class="layui-nav-item">
-            <a href=""><img src="//t.cn/RCzsdCq" class="layui-nav-img">${mail}}</a>
+            <#if logout?? && logout == "1">
+                <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
+            <#elseif user??>
+                <a href="/market/homepage"><img src="${user.headUrl}" class="layui-nav-img">${user.mail}</a>
+            <#else>
+                <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
+            </#if>
             <dl class="layui-nav-child">
                 <dd><a href="javascript:;">修改信息</a></dd>
                 <dd><a href="javascript:;">安全管理</a></dd>
-                <dd><a href="javascript:;">退出登录</a></dd>
+                <dd><a href="/market/user/logout">退出登录</a></dd>
             </dl>
         </li>
     </ul>
@@ -39,7 +45,7 @@
 </div>
 
 
-<script src="../static/layui/layui.all.js"></script>
+<script src="/static/layui/layui.all.js"></script>
 
 </body>
 </html>
