@@ -3,15 +3,19 @@
 <head>
     <meta charset="utf-8">
     <title>Login</title>
-    <link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
 </head>
 <body style="background-color: #f2f2f2">
     <div>
         <ul class="layui-nav">
-            <li class="layui-nav-item" style="margin-left: 20%"><a href="/index">在售商品</a></li>
-            <li class="layui-nav-item"><a href="/homepage">个人中心</a></li>
+            <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/index">在售商品</a></li>
+            <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
             <li class="layui-nav-item">
-                <a href=""><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">${name}</a>
+                <#if name??>
+                    <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">${name}</a>
+                <#else >
+                    <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
+                </#if>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">修改信息</a></dd>
                     <dd><a href="javascript:;">安全管理</a></dd>
@@ -31,19 +35,19 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" name="">邮箱</label>
                 <div class="layui-input-block">
-                    <input type="text" name="mail" placeholder="${mailMsg}" lay-verify="required|mail" autocomplete="off" class="layui-input">
+                    <input type="text" name="mail" placeholder="请输入" lay-verify="required|mail" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label" name="">密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="pass" placeholder="${passMsg}" lay-verify="required|pass" autocomplete="off" class="layui-input">
+                    <input type="password" name="pass" placeholder="请输入" lay-verify="required|pass" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label" name="">重复密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="pass2" placeholder="${passMsg}" lay-verify="required|pass2" autocomplete="off" class="layui-input">
+                    <input type="password" name="pass2" placeholder="请输入" lay-verify="required|pass2" autocomplete="off" class="layui-input">
                 </div>
             </div>
             <!--
@@ -73,7 +77,7 @@
         </form>
     </div>
 
-<script src="../static/layui/layui.js"></script>
+<script src="/static/layui/layui.js"></script>
 <script>
     layui.use('form', function(){
         var form = layui.form;

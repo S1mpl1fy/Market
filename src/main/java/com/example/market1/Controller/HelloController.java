@@ -12,6 +12,6 @@ public class HelloController {
     @RequestMapping("/hello")
     public String hello(Map<String, Object> map){
         map.put("name", "fongliang");
-        return "hello";
+        return "index";
     }
 }

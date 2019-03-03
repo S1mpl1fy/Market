@@ -35,6 +35,7 @@ public class PassportInterceptor implements HandlerInterceptor {
         if(ticket != null){
             TicketLogin ticketLogin = ticketUserDAO.getTicketLogin(ticket);
 
+            /*
             if(ticketLogin == null){
                 System.out.println("ticketLogin is null.");
             }
@@ -44,6 +45,7 @@ public class PassportInterceptor implements HandlerInterceptor {
             if(ticketLogin.getStatus() == 1){
                 System.out.println("ticket's status is 1.");
             }
+             */
             if(ticketLogin == null || ticketLogin.getExpired().before(new Date()) || ticketLogin.getStatus() == 1){
                 return true;
             }

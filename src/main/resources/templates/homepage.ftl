@@ -68,6 +68,7 @@
             <div class="layui-input-block">
                 <button class="layui-btn"  lay-filter="*" type="submit">登录</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button class="layui-btn"><a href="user/register">没有账号？</button>
             </div>
         </div>
         </form>
