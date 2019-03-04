@@ -13,7 +13,7 @@ public interface GoodsDAO {
     String INSERT_FIELDS = "title, description, image, price, user_id, status, comment_count, like_count, created_date";
     String SELECT_FIELDS = "id, " + INSERT_FIELDS;
 
-    @Insert({"insert into ", TABLE_NAME, "(", INSERT_FIELDS, ") values (#{title}, #{description}, #{image}, #{price}, #{user_id}, #{status}, #{comment_count}, #{like_count}, #{created_date})"})
+    @Insert({"insert into ", TABLE_NAME, "(", INSERT_FIELDS, ") values (#{title}, #{description}, #{image}, #{price}, #{userId}, #{status}, #{commentCount}, #{likeCount}, #{createdDate})"})
     int addGoods(Goods goods);
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where id=#{id}"})
@@ -25,7 +25,7 @@ public interface GoodsDAO {
     @Select({"select count(*) from ", TABLE_NAME})
     Goods getGoodsCount();
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " limit #{start}, #{end}"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " order by id desc limit #{start}, #{end}"})
     List<Goods> getLatestGoods(@Param("start") int start, @Param("end") int end);
 
     @Update({"update ", TABLE_NAME, " set comment_count = comment_count + 1 where id = #{id}"})

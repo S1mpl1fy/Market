@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class Market1ApplicationTests {
@@ -21,18 +23,11 @@ public class Market1ApplicationTests {
 
     @Test
     public void contextLoads() throws Exception{
-        //User user = userDAO.getUserById(6);
-        //Goods goods = new Goods("Bike On Sale","I want to sell my bike. Call me.","https://avatar.csdn.net/A/6/F/3_qq_35117601.jpg",149,8,0,0,0,new Date());
-        //goodsDAO.addGoods(goods);
+        Goods goods = new Goods("Bike On Sale2","I want to sell my bike. Call me.","https://avatar.csdn.net/A/6/F/3_qq_35117601.jpg",149,8,0,0,0,new Date());
+        goodsDAO.addGoods(goods);
 
 
-            Goods goods= new Goods();
-            goods = goodsDAO.getGoodsById(1);
-            System.out.println(goods.getUserId());
-            System.out.println(goods.getcommentCount());
 
-            User user = userDAO.getUserById(7);
-            System.out.println(user.getMail());
 
     }
 

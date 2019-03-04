@@ -13,7 +13,7 @@ public class Goods {
 
     public Goods(){}
 
-    public Goods(String title, String  description, String  image, int price, int userId, int status, int commentCount, int likeCount, Date createdDate){
+    public Goods(String title, String  description, String  image, int userId, int price, int status, int commentCount, int likeCount, Date createdDate){
         //this.id = id;
         this.title = title;
         this.description = description;

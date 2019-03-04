@@ -10,6 +10,7 @@
         <ul class="layui-nav">
             <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/index">在售商品</a></li>
             <li class="layui-nav-item"><a href="">个人中心</a></li>
+            <li class="layui-nav-item"><a href="/market/publish">发布商品</a></li>
             <li class="layui-nav-item">
                 <#if user??>
                     <a href="/market/homepage"><img src="${user.headUrl}"" class="layui-nav-img">${user.mail}</a>
@@ -95,7 +96,7 @@
         });
 
         form.on('submit', function (data) {
-            console.log(data);
+            console.log(data.elem);
             var temp = new FormData(data.elem);
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/market/homepage.jspy', true);

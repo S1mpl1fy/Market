@@ -1,9 +1,11 @@
 package com.example.market1.Utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.market1.Model.TicketLogin;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
 
 public class MarketUtils {
@@ -53,5 +55,12 @@ public class MarketUtils {
             }
         }
         return ticket;
+    }
+
+    public static boolean ticketLoginValid(TicketLogin ticketLogin){
+        if(ticketLogin == null || ticketLogin.getExpired().before(new Date()) || ticketLogin.getStatus() == 1){
+            return false;
+        }
+        return true;
     }
 }

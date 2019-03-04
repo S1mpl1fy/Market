@@ -120,6 +120,7 @@
             elem: '#test1' //绑定元素
             ,url: '/uploadImage/' //上传接口
             ,done: function(res){
+                console.log(res.msg);
                 //上传完毕回调
                 alert("上传完成。");
             }

@@ -25,7 +25,7 @@
         </ul>
     </div>
     <div  class="layui-container">
-        <form class="layui-form"  style="margin-left: 20%; margin-right: 20%; margin-top: 12% " action="register.jspy">
+        <form class="layui-form"  style="margin-left: 20%; margin-right: 20%; margin-top: 12% " action="/market/register.jspy">
             <div class="layui-form-item">
                 <label class="layui-form-label" name="">用户名</label>
                 <div class="layui-input-block">

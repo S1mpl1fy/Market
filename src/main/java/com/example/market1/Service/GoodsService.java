@@ -33,4 +33,8 @@ public class GoodsService {
                 StandardCopyOption.REPLACE_EXISTING);
         return MarketUtils.TOUTIAO_DOMAIN + "image?name=" + fileName;
     }
+
+    public int addGoods(Goods goods){
+        return goodsDAO.addGoods(goods);
+    }
 }

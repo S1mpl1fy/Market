@@ -44,7 +44,7 @@
             <img src="${gu.user.headUrl}" style="height: 18px; margin-right: 10px">
             ${gu.goods.title}
             </div>
-            <div class="layui-card-body">
+            <div class="layui-card-body" onclick="window.open('http://localhost:8080/market/goods/detail/'+${gu.goods.id},'_self')">
                 <div class="layui-row grid-demo">
                     <div class="layui-col-md3" style="height: 80px;">
                         <div class="grid-demo grid-demo-bg1">
@@ -75,6 +75,8 @@
 
 
 <script src="/static/layui/layui.all.js"></script>
+<script>
 
+</script>
 </body>
 </html>
