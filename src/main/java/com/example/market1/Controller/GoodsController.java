@@ -1,13 +1,11 @@
 package com.example.market1.Controller;
 
-import com.example.market1.DAO.GoodsDAO;
-import com.example.market1.DAO.TicketUserDAO;
-import com.example.market1.DAO.UserDAO;
 import com.example.market1.Model.*;
 import com.example.market1.Service.CommentService;
 import com.example.market1.Service.GoodsService;
+import com.example.market1.Service.TicketService;
+import com.example.market1.Service.UserService;
 import com.example.market1.Utils.MarketUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +13,6 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -28,13 +25,10 @@ public class GoodsController {
     GoodsService goodsService;
 
     @Autowired
-    UserDAO userDAO;
+    UserService userService;
 
     @Autowired
-    GoodsDAO goodsDAO;
-
-    @Autowired
-    TicketUserDAO ticketUserDAO;
+    TicketService ticketService;
 
     @Autowired
     CommentService commentService;
@@ -75,10 +69,12 @@ public class GoodsController {
 
     @RequestMapping("/market/publish.jspy")
     public String publishGoods(@ModelAttribute("form")PublishForm publishForm, HttpServletResponse response, HttpServletRequest request, Model model){
+        return goodsService.publishGoods(publishForm, response, request, model);
+        /*
         String ticket = MarketUtils.getTicketFromRequst(request);
         int userId = 0;
         if(ticket == null) return "homepage";
-        TicketLogin ticketLogin = ticketUserDAO.getTicketLogin(ticket);
+        Ticket ticketLogin = ticketUserDAO.getTicket(ticket);
         if(!MarketUtils.ticketLoginValid(ticketLogin)){
             return "homepage";
         }else{
@@ -92,15 +88,13 @@ public class GoodsController {
         Goods goods = new Goods(publishForm.getTitle(),publishForm.getDescription(),publishForm.getImage(), userId, publishForm.getPrice(), 0, 0, 0, new Date());
         goodsService.addGoods(goods);
         return "forward:index";
-        //request.getParameter("img");
+         */
     }
 
     @RequestMapping("/market/goods/detail/{goodsId}")
     public String goodsDetailPage(@PathVariable("goodsId") int goodsId, HttpServletRequest request, Model model){
-
-
-        Goods goods = goodsDAO.getGoodsById(goodsId);
-        User user = userDAO.getUserById(goods.getUserId());
+        Goods goods = goodsService.getGoodsById(goodsId);
+        User user = userService.getUserById(goods.getUserId());
 
         //加载商品详情有关的商品和用户信息
         Map<String, Object> gu = new HashMap<>();

@@ -2,7 +2,7 @@ package com.example.market1.Model;
 
 import java.util.Date;
 
-public class TicketLogin {
+public class Ticket {
     int id, userid, status;
     String ticket;
     Date expired;

@@ -22,7 +22,27 @@ public class UserService {
         return 1;
     }
 
-    public User getUser(int id){
+    public int addUser(User user){
+        return userDAO.addUser(user);
+    }
+
+    public User getUserById(int id){
         return userDAO.getUserById(id);
+    }
+
+    public User getUserByMail(String mail){
+        return userDAO.getUserByMail(mail);
+    }
+
+    public String getSaltByMail(String mail){
+        return userDAO.getSaltByMail(mail);
+    }
+
+    public String getPassByMail(String mail){
+        return userDAO.getPassByMail(mail);
+    }
+
+    public int getIdByMail(String mail){
+        return userDAO.getIdByMail(mail);
     }
 }

@@ -1,9 +1,9 @@
 package com.example.market1.Interceptor;
 
-import com.example.market1.DAO.TicketUserDAO;
+import com.example.market1.DAO.TicketDAO;
 import com.example.market1.DAO.UserDAO;
 import com.example.market1.Model.HostHolder;
-import com.example.market1.Model.TicketLogin;
+import com.example.market1.Model.Ticket;
 import com.example.market1.Model.User;
 import com.example.market1.Utils.MarketUtils;
 import com.example.market1.Utils.MyTools;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -23,7 +22,7 @@ public class PassportInterceptor implements HandlerInterceptor {
     private UserDAO userDAO;
 
     @Autowired
-    private TicketUserDAO ticketUserDAO;
+    private TicketDAO ticketDAO;
 
     @Autowired
     private HostHolder hostHolder;
@@ -33,7 +32,7 @@ public class PassportInterceptor implements HandlerInterceptor {
         String ticket = MarketUtils.getTicketFromRequst(request);
         MyTools.log("ticket:" + ticket + "$" );
         if(ticket != null){
-            TicketLogin ticketLogin = ticketUserDAO.getTicketLogin(ticket);
+            Ticket ticketLogin = ticketDAO.getTicket(ticket);
 
             /*
             if(ticketLogin == null){
@@ -83,7 +82,7 @@ public class PassportInterceptor implements HandlerInterceptor {
 
     /*
     public int getTicketStatus(String ticket){
-        TicketLogin ticketLogin = ticketUserDAO.getTicketLogin(ticket);
+        Ticket ticketLogin = ticketDAO.getTicket(ticket);
         return ticketLogin.getStatus();
     }
      */

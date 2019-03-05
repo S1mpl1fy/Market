@@ -1,18 +1,16 @@
 package com.example.market1.Controller;
 
-import com.example.market1.DAO.GoodsDAO;
-import com.example.market1.DAO.TicketUserDAO;
-import com.example.market1.DAO.UserDAO;
 import com.example.market1.Model.Goods;
 import com.example.market1.Model.GoodsViewModel;
 import com.example.market1.Model.User;
+import com.example.market1.Service.GoodsService;
+import com.example.market1.Service.TicketService;
+import com.example.market1.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,13 +18,13 @@ import java.util.Map;
 @Controller
 public class IndexController {
     @Autowired
-    UserDAO userDAO;
+    UserService userService;
 
     @Autowired
-    TicketUserDAO ticketUserDAO;
+    TicketService ticketService;
 
     @Autowired
-    GoodsDAO goodsDAO;
+    GoodsService goodsService;
 
     @RequestMapping("/market/index")
     public String index(HttpServletRequest request, Map<String, Object> map){
@@ -40,9 +38,9 @@ public class IndexController {
         System.out.println("/market/index " + start + " " + end);
 
         List<GoodsViewModel> gvm = new ArrayList<>();
-        List<Goods> goodsList = goodsDAO.getLatestGoods(start, end);
+        List<Goods> goodsList = goodsService.getLatestGoods(start, end);
         for(Goods goods: goodsList){
-            User user = userDAO.getUserById(goods.getUserId());
+            User user = userService.getUserById(goods.getUserId());
             GoodsViewModel goodsViewModel = new GoodsViewModel(goods,user);
             //System.out.println(goods.getTitle());
             //System.out.println(user.getMail());

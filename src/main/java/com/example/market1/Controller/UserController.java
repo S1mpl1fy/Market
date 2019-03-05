@@ -1,11 +1,11 @@
 package com.example.market1.Controller;
 
-import com.example.market1.DAO.TicketUserDAO;
-import com.example.market1.DAO.UserDAO;
 import com.example.market1.Model.LoginForm;
-import com.example.market1.Model.TicketLogin;
+import com.example.market1.Model.Ticket;
 import com.example.market1.Model.User;
 import com.example.market1.Model.UserForm;
+import com.example.market1.Service.TicketService;
+import com.example.market1.Service.UserService;
 import com.example.market1.Utils.MarketUtils;
 import com.example.market1.Utils.MyTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +26,10 @@ import java.util.UUID;
 @RequestMapping("/market")
 public class UserController {
     @Autowired
-    UserDAO userDAO;
+    UserService userService;
 
     @Autowired
-    TicketUserDAO ticketUserDAO;
+    TicketService ticketService;
 
     @RequestMapping("/register")
     public String registerPage(Map<String, Object> map){
@@ -50,7 +50,7 @@ public class UserController {
                 map.put("passMsg","两次输入的密码不相同");
                 return "register";
             }
-            if(userDAO.getUserByMail(userForm.getMail()) != null){
+            if(userService.getUserByMail(userForm.getMail()) != null){
                 map.put("mailMsg","邮箱已被占用，请换一个邮箱");
                 return "register";
             }
@@ -58,7 +58,7 @@ public class UserController {
             String head_url = String.format("http://images.nowcoder.com/head/%dt.png", random.nextInt(100));
             String salt = String.format("%f",random.nextDouble());
             pass = MyTools.getMD5(String.format("%s%s", pass, salt));
-            userDAO.addUser(new User(userForm.getName(),mail,pass,salt,head_url,userForm.getSex()));
+            userService.addUser(new User(userForm.getName(),mail,pass,salt,head_url,userForm.getSex()));
             //map.put("mail", userForm.getMail());
             map.put("name",mail);
             map.put("head_url",head_url);
@@ -82,8 +82,8 @@ public class UserController {
             System.out.println("homepage.jspy");
             User user;
             String mail = loginForm.getMail(), pass = loginForm.getPass();
-            String salt = userDAO.getSaltByMail(mail);
-            String savePass = userDAO.getPassByMail(mail);
+            String salt = userService.getSaltByMail(mail);
+            String savePass = userService.getPassByMail(mail);
             if(salt == null){
                 map.put("name", "未登录");
                 map.put("passMsg", "用户不存在");
@@ -102,17 +102,17 @@ public class UserController {
             String ticket = MarketUtils.getTicketFromRequst(request);
             System.out.println("login ticket:!!" + ticket);
 
-            TicketLogin ticketLogin = new TicketLogin();
-            ticketLogin.setUserid(userDAO.getIdByMail(mail));
+            Ticket ticketLogin = new Ticket();
+            ticketLogin.setUserid(userService.getIdByMail(mail));
             ticketLogin.setExpired(date);
             ticketLogin.setTicket(UUID.randomUUID().toString().replace("-",""));
 
-            ticketUserDAO.addTicketLogin(ticketLogin);
+            ticketService.addTicketLogin(ticketLogin);
             Cookie cookie = new Cookie("ticket", ticketLogin.getTicket());
             cookie.setPath("/market");
             response.addCookie(cookie);
 
-            user = userDAO.getUserByMail(mail);
+            user = userService.getUserByMail(mail);
             map.put("name", mail);
             map.put("head_url", user.getHeadUrl());
             //response.get
@@ -132,7 +132,7 @@ public class UserController {
         cookie.setPath("/");
         response.addCookie(cookie);
         if(ticket != null){
-            ticketUserDAO.updateStatus(ticket);
+            ticketService.updateStatus(ticket);
         }
         map.put("logout","1");
         return "index";
