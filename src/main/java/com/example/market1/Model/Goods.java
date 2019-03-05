@@ -13,7 +13,7 @@ public class Goods {
 
     public Goods(){}
 
-    public Goods(String title, String  description, String  image, int userId, int price, int status, int commentCount, int likeCount, Date createdDate){
+    public Goods(String title, String  description, String  image, int userId, double price, int status, int commentCount, int likeCount, Date createdDate){
         //this.id = id;
         this.title = title;
         this.description = description;
@@ -103,11 +103,11 @@ public class Goods {
         this.likeCount = likeCount;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -119,6 +119,6 @@ public class Goods {
         this.createdDate = createdDate;
     }
 
-    private int price;
+    private double price;
     private Date createdDate;
 }

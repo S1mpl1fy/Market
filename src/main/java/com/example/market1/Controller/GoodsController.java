@@ -3,10 +3,8 @@ package com.example.market1.Controller;
 import com.example.market1.DAO.GoodsDAO;
 import com.example.market1.DAO.TicketUserDAO;
 import com.example.market1.DAO.UserDAO;
-import com.example.market1.Model.Goods;
-import com.example.market1.Model.PublishForm;
-import com.example.market1.Model.TicketLogin;
-import com.example.market1.Model.User;
+import com.example.market1.Model.*;
+import com.example.market1.Service.CommentService;
 import com.example.market1.Service.GoodsService;
 import com.example.market1.Utils.MarketUtils;
 import org.apache.ibatis.annotations.Param;
@@ -22,9 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class GoodsController {
@@ -39,6 +35,9 @@ public class GoodsController {
 
     @Autowired
     TicketUserDAO ticketUserDAO;
+
+    @Autowired
+    CommentService commentService;
 
     @RequestMapping(path = {"/uploadImage/"}, method = {RequestMethod.POST})
     @ResponseBody
@@ -98,12 +97,20 @@ public class GoodsController {
 
     @RequestMapping("/market/goods/detail/{goodsId}")
     public String goodsDetailPage(@PathVariable("goodsId") int goodsId, HttpServletRequest request, Model model){
+
+
         Goods goods = goodsDAO.getGoodsById(goodsId);
         User user = userDAO.getUserById(goods.getUserId());
+
+        //加载商品详情有关的商品和用户信息
         Map<String, Object> gu = new HashMap<>();
         gu.put("goods", goods);
         gu.put("user", user);
         model.addAttribute("gu", gu);
+
+        //加载评论
+        List<CommentViewModel> cvmList = commentService.getCommentByGoodsId(goodsId);
+        model.addAttribute("cus",cvmList);
         return "good_detail";
     }
 }

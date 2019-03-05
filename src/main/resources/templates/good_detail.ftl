@@ -47,25 +47,81 @@
             <i class="layui-icon layui-icon-reply-fill" style="margin-left: 20px;font-size: 24px"><span class="layui-badge-rim">${gu.goods.commentCount}</span></i>
         </div>
     </div>
-    <div class="layui-card">
-        <div class="layui-card-header" style="margin-top: 20px; height: 20px;">
-            <img src="http://images.nowcoder.com/head/11t.png"  style="margin-top: 2px; height: 18px;padding-left: 8px">
+    <div class="layui-card" style="margin-top: 20px">
+        <div class="layui-card-header">
+            <p>评论</p>
         </div>
-        <div class="layui-card-body" style="height: 24px;">
-            <p style="padding-left: 8px; font-size: 16px; margin-top: 4px;">这个真的好吃！！
+        <div class="layui-card-body">
+            <textarea name="description" placeholder="请输入评论内容" class="layui-textarea" id="comment"></textarea>
+        </div>
+        <div class="layui-card-body" align="right">
+            <button class="layui-btn" onclick="submit()">提交评论</button>
         </div>
     </div>
+
+    <#list cus as cu>
+        <#if cu??>
+            <div class="layui-card" style="margin-top: 20px">
+            <div class="layui-card-body">
+            <div class="layui-row layui-col-space1">
+            <div class="layui-col-md1">
+                <div class="layui-row grid-demo">
+                    <img src="${cu.userHeadUrl}" height="60px">
+                </div>
+            </div>
+            <div class="layui-col-md11">
+            <div class="layui-row grid-demo grid-demo-bg1">
+            <div class="layui-col-md2" style="color:  #7a7a52;">
+            ${cu.userName}
+            </div>
+            <div class="layui-col-md9" style="color:  #7a7a52;">
+                ${cu.date?string('yyyy-MM-dd HH:mm:ss')}
+            </div>
+            <div class="layui-col-md11" style="padding-top: 12px">
+                ${cu.content}
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+
+        </#if>
+    </#list>
+</div>
+
+<div style="margin-bottom: 60px">
 </div>
 
 
 <script src="/static/layui/layui.js"></script>
 <script>
     //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
+    var userId = ${user.id},  goodsId = ${gu.goods.id};
     layui.use('element', function(){
         var element = layui.element;
 
         //…
     });
+
+    function submit() {
+        var content  = document.getElementById('comment').value;
+        var temp = new FormData();
+        temp.append("userId",userId);
+        temp.append("goodsId",goodsId);
+        temp.append("content", content);
+        console.log(temp);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/market/comment/submit', true);
+        xhr.send(temp);
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState == 4 && xhr.status == 200){
+                window.location.reload(true);
+            }
+        }
+        //window.open('http://localhost:8080/market/goods/detail/' + goodsId, '_self');
+        return false;
+    }
 </script>
 </body>
 </html>

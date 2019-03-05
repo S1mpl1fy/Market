@@ -2,7 +2,7 @@ package com.example.market1.Model;
 
 public class PublishForm {
     private String title, description, image;
-    private int price;
+    private double price;
 
     public String getTitle() {
         return title;
@@ -28,11 +28,11 @@ public class PublishForm {
         this.image = image;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
