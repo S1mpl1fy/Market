@@ -33,12 +33,14 @@ public class GoodsController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    HostHolder hostHolder;
+
     @RequestMapping(path = {"/uploadImage/"}, method = {RequestMethod.POST})
     @ResponseBody
     public String uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             String fileUrl = goodsService.saveImage(file);
-            //String fileUrl = qiniuService.saveImage(file);
             if (fileUrl == null) {
                 return MarketUtils.getJSONString(1, "上传图片失败");
             }
@@ -64,31 +66,16 @@ public class GoodsController {
 
     @RequestMapping("/market/publish")
     public String publishPage(){
+        if(hostHolder.getUser() == null){
+            return "forward:homepage";
+        }
+
         return "publish";
     }
 
     @RequestMapping("/market/publish.jspy")
     public String publishGoods(@ModelAttribute("form")PublishForm publishForm, HttpServletResponse response, HttpServletRequest request, Model model){
         return goodsService.publishGoods(publishForm, response, request, model);
-        /*
-        String ticket = MarketUtils.getTicketFromRequst(request);
-        int userId = 0;
-        if(ticket == null) return "homepage";
-        Ticket ticketLogin = ticketUserDAO.getTicket(ticket);
-        if(!MarketUtils.ticketLoginValid(ticketLogin)){
-            return "homepage";
-        }else{
-            userId = ticketLogin.getUserid();
-        }
-        String url = request.getParameter("image");
-        String url2 = publishForm.getImage();
-        if(publishForm.getImage() == null){
-            return "forward:index";
-        }
-        Goods goods = new Goods(publishForm.getTitle(),publishForm.getDescription(),publishForm.getImage(), userId, publishForm.getPrice(), 0, 0, 0, new Date());
-        goodsService.addGoods(goods);
-        return "forward:index";
-         */
     }
 
     @RequestMapping("/market/goods/detail/{goodsId}")

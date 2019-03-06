@@ -20,7 +20,7 @@
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">修改信息</a></dd>
                     <dd><a href="javascript:;">安全管理</a></dd>
-                    <dd><a href="/market/user/logout">退出登录</a></dd>
+                    <dd><a href="javascript:void(0)" onclick="logout()">退出登录</a></dd>
                 </dl>
             </li>
         </ul>
@@ -56,13 +56,13 @@
         <div class="layui-form-item">
             <label class="layui-form-label" >邮箱</label>
             <div class="layui-input-block">
-                <input type="text" name="mail" placeholder="请输入" lay-verify="required|mail" autocomplete="off" class="layui-input">
+                <input type="text" name="mail" placeholder="请输入邮箱" lay-verify="required|mail" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
         <label class="layui-form-label" >密码</label>
         <div class="layui-input-block">
-        <input type="password" name="pass" placeholder="${passMsg}" lay-verify="required|pass" autocomplete="off" class="layui-input">
+        <input type="password" name="pass" placeholder="请输入密码" lay-verify="required|pass" autocomplete="off" class="layui-input">
         </div>
         </div>
         <div class="layui-form-item">
@@ -102,10 +102,11 @@
             xhr.open('POST', '/market/homepage.jspy', true);
             xhr.send(temp);
             xhr.onload = function() {
-                window.location.reload();
-            }
+                //window.location.reload();
+                window.open('http://localhost:8080/market/index','_self');
+            };
             return false;
-        })
+        });
         //各种基于事件的操作，下面会有进一步介绍
     });
     layui.use('element', function(){
@@ -117,6 +118,16 @@
             layer.msg(elem.text());
         });
     });
+    function logout() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET','http://localhost:8080/market/user/logout',true);
+        xhr.send(null);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200){
+                window.location.reload(true);
+            }
+        }
+    }
 </script>
 </body>
 </html>

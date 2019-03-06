@@ -2,6 +2,7 @@ package com.example.market1.Controller;
 
 import com.example.market1.Model.Goods;
 import com.example.market1.Model.GoodsViewModel;
+import com.example.market1.Model.HostHolder;
 import com.example.market1.Model.User;
 import com.example.market1.Service.GoodsService;
 import com.example.market1.Service.TicketService;
@@ -26,8 +27,14 @@ public class IndexController {
     @Autowired
     GoodsService goodsService;
 
+    @Autowired
+    HostHolder hostHolder;
+
     @RequestMapping("/market/index")
     public String index(HttpServletRequest request, Map<String, Object> map){
+        if(hostHolder.getUser() == null){
+            return "forward:homepage";
+        }
 
         String page = request.getParameter("page");
         int start = 0, end = 10;
@@ -35,19 +42,16 @@ public class IndexController {
             end = Integer.parseInt(page) * 10;
             start = end - 10;
         }
-        System.out.println("/market/index " + start + " " + end);
+        //System.out.println("/market/index " + start + " " + end);
 
         List<GoodsViewModel> gvm = new ArrayList<>();
         List<Goods> goodsList = goodsService.getLatestGoods(start, end);
         for(Goods goods: goodsList){
             User user = userService.getUserById(goods.getUserId());
             GoodsViewModel goodsViewModel = new GoodsViewModel(goods,user);
-            //System.out.println(goods.getTitle());
-            //System.out.println(user.getMail());
             gvm.add(goodsViewModel);
         }
         map.put("gvm",gvm);
-        //model.addAttribute("gvm", gvm);
-        return "index2";
+        return "index";
     }
 }

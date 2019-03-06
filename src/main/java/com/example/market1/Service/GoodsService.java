@@ -2,6 +2,7 @@ package com.example.market1.Service;
 
 import com.example.market1.DAO.GoodsDAO;
 import com.example.market1.DAO.TicketDAO;
+import com.example.market1.DAO.UserDAO;
 import com.example.market1.Model.*;
 import com.example.market1.Utils.MarketUtils;
 import org.springframework.beans.factory.annotation.Autowired;

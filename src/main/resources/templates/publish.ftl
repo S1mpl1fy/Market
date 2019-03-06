@@ -19,7 +19,7 @@
             <dl class="layui-nav-child">
                 <dd><a href="javascript:;">修改信息</a></dd>
                 <dd><a href="javascript:;">安全管理</a></dd>
-                <dd><a href="/market/user/logout">退出登录</a></dd>
+                <dd><a href="javascript:void(0)" onclick="logout()">退出登录</a></dd>
             </dl>
         </li>
     </ul>
@@ -124,6 +124,16 @@
             }
         });
     });
+    function logout() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET','http://localhost:8080/market/user/logout',true);
+        xhr.send(null);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200){
+                window.open('http://localhost:8080/market/homepage','_self');
+            }
+        }
+    }
 </script>
 </body>
 </html>

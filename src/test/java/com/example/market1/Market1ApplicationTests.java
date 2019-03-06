@@ -1,37 +1,49 @@
 package com.example.market1;
 
-import com.example.market1.DAO.GoodsDAO;
-import com.example.market1.DAO.UserDAO;
-import com.example.market1.Model.Comment;
-import com.example.market1.Model.Goods;
-import com.example.market1.Model.User;
+import com.alibaba.fastjson.JSON;
 import com.example.market1.Service.CommentService;
+import com.example.market1.Service.GoodsService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
+import javax.sql.DataSource;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class Market1ApplicationTests {
     @Autowired
-    UserDAO userDAO;
+    ApplicationContext applicationContext;
 
     @Autowired
-    GoodsDAO goodsDAO;
+    DataSourceProperties dataSourceProperties;
 
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    GoodsService goodsService;
+
     @Test
     public void contextLoads() throws Exception{
 
-        //commentService.addComment(8,44,"这个还可以？？");
+        /*
+        DataSource dataSource = applicationContext.getBean(DataSource.class);
 
-
+        System.out.println(dataSource);
+        System.out.println(dataSource.getClass().getName());
+        System.out.println(dataSourceProperties);
+        //执行SQL,输出查到的数据
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        List<?> resultList = jdbcTemplate.queryForList("select * from user");
+        System.out.println("===>>>>>>>>>>>" + JSON.toJSONString(resultList));
+       */
     }
 
 }

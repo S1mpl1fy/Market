@@ -11,7 +11,7 @@ public class TicketService {
     @Autowired
     TicketDAO ticketDAO;
 
-    public int addTicketLogin(Ticket ticket){
+    public int addTicket(Ticket ticket){
         return ticketDAO.addTicket(ticket);
     }
 

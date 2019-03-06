@@ -10,9 +10,7 @@ import com.example.market1.Utils.MarketUtils;
 import com.example.market1.Utils.MyTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +57,7 @@ public class UserController {
             String salt = String.format("%f",random.nextDouble());
             pass = MyTools.getMD5(String.format("%s%s", pass, salt));
             userService.addUser(new User(userForm.getName(),mail,pass,salt,head_url,userForm.getSex()));
-            //map.put("mail", userForm.getMail());
+
             map.put("name",mail);
             map.put("head_url",head_url);
             return "forward:index";
@@ -75,58 +73,45 @@ public class UserController {
         return "homepage";
     }
 
-
     @RequestMapping(value = "/homepage.jspy",method = {RequestMethod.POST})
     public String loginSubmit(@ModelAttribute("form")LoginForm loginForm, Map<String, Object> map, HttpServletResponse response, HttpServletRequest request)throws Exception{
+
         try{
             System.out.println("homepage.jspy");
             User user;
             String mail = loginForm.getMail(), pass = loginForm.getPass();
             String salt = userService.getSaltByMail(mail);
             String savePass = userService.getPassByMail(mail);
-            if(salt == null){
-                map.put("name", "未登录");
-                map.put("passMsg", "用户不存在");
-                return "homepage";
-            }
             String mdPass = MyTools.getMD5(pass + salt);
             if(!mdPass.equals(savePass)){
-                map.put("name", "未登录");
-                map.put("passMsg", "密码错误");
                 return "homepage";
             }
             Date date = new Date();
             date.setTime(date.getTime() + 1000*3600*120);
-            //System.out.println(date);
 
-            String ticket = MarketUtils.getTicketFromRequst(request);
-            System.out.println("login ticket:!!" + ticket);
+            Ticket ticket = new Ticket();
+            ticket.setUserid(userService.getIdByMail(mail));
+            ticket.setExpired(date);
+            ticket.setTicket(UUID.randomUUID().toString().replace("-",""));
 
-            Ticket ticketLogin = new Ticket();
-            ticketLogin.setUserid(userService.getIdByMail(mail));
-            ticketLogin.setExpired(date);
-            ticketLogin.setTicket(UUID.randomUUID().toString().replace("-",""));
-
-            ticketService.addTicketLogin(ticketLogin);
-            Cookie cookie = new Cookie("ticket", ticketLogin.getTicket());
+            ticketService.addTicket(ticket);
+            Cookie cookie = new Cookie("ticket", ticket.getTicket());
             cookie.setPath("/market");
             response.addCookie(cookie);
 
             user = userService.getUserByMail(mail);
             map.put("name", mail);
             map.put("head_url", user.getHeadUrl());
-            //response.get
-            return "forward:index";
+            return "homepage";
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
     }
 
     @RequestMapping("user/logout")
-    public String logout(Map<String, Object> map, HttpServletRequest request, HttpServletResponse response){
+    @ResponseBody
+    public String logout(HttpServletRequest request, HttpServletResponse response){
         String ticket = MarketUtils.getTicketFromRequst(request);
-        //if(ticket != null) System.out.println(ticket);
-        //else System.out.println("12345678+++++++++");
         Cookie cookie = new Cookie("ticket",null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
@@ -134,7 +119,6 @@ public class UserController {
         if(ticket != null){
             ticketService.updateStatus(ticket);
         }
-        map.put("logout","1");
-        return "index";
+        return MarketUtils.getJSONString(0,"logout.");
     }
 }
