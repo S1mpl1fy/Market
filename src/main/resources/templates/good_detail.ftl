@@ -19,7 +19,7 @@
             </#if>
             <dl class="layui-nav-child">
                 <dd><a href="javascript:;">修改信息</a></dd>
-                <dd><a href="javascript:;">安全管理</a></dd>
+                <dd><a href="/market/msg/list">站内信</a></dd>
                 <dd><a href="javascript:void(0)" onclick="logout()">退出登录</a></dd>
             </dl>
         </li>
@@ -62,30 +62,29 @@
     <#list cus as cu>
         <#if cu??>
             <div class="layui-card" style="margin-top: 20px">
-            <div class="layui-card-body">
-            <div class="layui-row layui-col-space1">
-            <div class="layui-col-md1">
-                <div class="layui-row grid-demo">
-                    <img src="${cu.userHeadUrl}" height="60px">
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space1">
+                        <div class="layui-col-md1">
+                            <div class="layui-row grid-demo">
+                                <img src="${cu.userHeadUrl}" height="60px" >
+                            </div>
+                        </div>
+                         <div class="layui-col-md11">
+                            <div class="layui-row grid-demo grid-demo-bg1">
+                                <div class="layui-col-md2" style="color:  #7a7a52;">
+                                    ${cu.userName}
+                                </div>
+                                <div class="layui-col-md9" style="color:  #7a7a52;">
+                                    ${cu.date?string('yyyy-MM-dd HH:mm:ss')}
+                                </div>
+                                <div class="layui-col-md11" style="padding-top: 12px">
+                                    ${cu.content}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="layui-col-md11">
-            <div class="layui-row grid-demo grid-demo-bg1">
-            <div class="layui-col-md2" style="color:  #7a7a52;">
-            ${cu.userName}
-            </div>
-            <div class="layui-col-md9" style="color:  #7a7a52;">
-                ${cu.date?string('yyyy-MM-dd HH:mm:ss')}
-            </div>
-            <div class="layui-col-md11" style="padding-top: 12px">
-                ${cu.content}
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
-
         </#if>
     </#list>
 </div>

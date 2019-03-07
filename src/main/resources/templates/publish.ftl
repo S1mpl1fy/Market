@@ -18,7 +18,7 @@
             </#if>
             <dl class="layui-nav-child">
                 <dd><a href="javascript:;">修改信息</a></dd>
-                <dd><a href="javascript:;">安全管理</a></dd>
+                <dd><a href="/market/msg/list">站内信</a></dd>
                 <dd><a href="javascript:void(0)" onclick="logout()">退出登录</a></dd>
             </dl>
         </li>

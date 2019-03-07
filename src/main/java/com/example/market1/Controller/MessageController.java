@@ -29,6 +29,9 @@ public class MessageController {
 
     @RequestMapping(path = {"/market/msg/list"}, method = {RequestMethod.GET})
     public String conversationDetail(Model model) {
+        if(hostHolder.getUser() == null){
+            return "forward:homepage";
+        }
         try {
             int localUserId = hostHolder.getUser().getId();
             List<ViewObject> conversations = new ArrayList<>();
@@ -46,11 +49,14 @@ public class MessageController {
         } catch (Exception e) {
             System.out.println("获取站内信列表失败" + e.getMessage());
         }
-        return "letter";
+        return "message";
     }
 
     @RequestMapping(path = {"/market/msg/detail/{conversationId}"}, method = {RequestMethod.GET})
     public String conversationDetail(Model model, @PathVariable("conversationId") String conversationId) {
+        if(hostHolder.getUser() == null){
+            return "forward:homepage";
+        }
         try {
             List<Message> conversationList = messageService.getConversationDetail(conversationId, 0, 10);
             List<ViewObject> messages = new ArrayList<>();
@@ -63,17 +69,23 @@ public class MessageController {
                 }
                 vo.set("headUrl", user.getHeadUrl());
                 vo.set("userId", user.getId());
+                vo.set("userName", user.getName());
                 messages.add(vo);
             }
+            int localUserId = hostHolder.getUser().getId();
+            String[] temp = conversationId.split("_");
+            String targetId = String.valueOf(localUserId).equals(temp[0])?temp[1]:temp[0];
+
+            model.addAttribute("targetId", targetId);
             model.addAttribute("messages", messages);
         } catch (Exception e) {
             System.out.println("获取详情消息失败" + e.getMessage());
         }
-        return "letter_detail";
+        return "message_detail";
     }
 
 
-    @RequestMapping(path = {"/market/msg/addMessage"}, method = {RequestMethod.POST})
+    @RequestMapping(path = {"/market/msg/list.add"}, method = {RequestMethod.POST})
     @ResponseBody
     public String addMessage(@RequestParam("fromId") int fromId,
                              @RequestParam("toId") int toId,
@@ -86,10 +98,10 @@ public class MessageController {
             msg.setCreatedDate(new Date());
             msg.setConversationId(fromId < toId ? String.format("%d_%d", fromId, toId) : String.format("%d_%d", toId, fromId));
             messageService.addMessage(msg);
-            return MarketUtils.getJSONString(msg.getId());
+            return MarketUtils.getJSONString(0,String.valueOf(msg.getId()));
         } catch (Exception e) {
             System.out.println("增加评论失败" + e.getMessage());
-            return MarketUtils.getJSONString(1, "插入评论失败");
+            return MarketUtils.getJSONString(-1, "插入评论失败");
         }
     }
 }

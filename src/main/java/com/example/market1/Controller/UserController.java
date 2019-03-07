@@ -1,15 +1,13 @@
 package com.example.market1.Controller;
 
-import com.example.market1.Model.LoginForm;
-import com.example.market1.Model.Ticket;
-import com.example.market1.Model.User;
-import com.example.market1.Model.UserForm;
+import com.example.market1.Model.*;
 import com.example.market1.Service.TicketService;
 import com.example.market1.Service.UserService;
 import com.example.market1.Utils.MarketUtils;
 import com.example.market1.Utils.MyTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -120,5 +118,12 @@ public class UserController {
             ticketService.updateStatus(ticket);
         }
         return MarketUtils.getJSONString(0,"logout.");
+    }
+
+    @RequestMapping("/user/{id}")
+    public String personalPage(@PathVariable("id") int id, HttpServletRequest request, Model model){
+        User user = userService.getUserById(id);
+        model.addAttribute("target", user);
+        return "personal_page";
     }
 }
