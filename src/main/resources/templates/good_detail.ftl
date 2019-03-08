@@ -8,7 +8,7 @@
 <body style="background-color: #f2f2f2">
 <div>
     <ul class="layui-nav">
-        <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/index">在售商品</a></li>
+        <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/goods">在售商品</a></li>
         <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
         <li class="layui-nav-item"><a href="/market/publish">发布商品</a></li>
         <li class="layui-nav-item">
@@ -42,8 +42,16 @@
             <p style="padding: 15px;">${gu.goods.description}
         </div>
         <div class="layui-card-body" style="height:30px">
-            <i class="layui-icon layui-icon-praise" style="font-size: 24px; margin-left: 15px"><span class="layui-badge-rim">${gu.goods.likeCount}</span></i>
-            <i class="layui-icon layui-icon-tread" style="margin-left: 20px;font-size: 24px"><span class="layui-badge-rim">1</span></i>
+            <#if gu.status == 1>
+                <i class="layui-icon layui-icon-praise" style="color: #3399ff;"  id='${gu.goods.id}'  onclick="like('${gu.goods.id}')"><span class="layui-badge-rim" id="likeCount${gu.goods.id}">${gu.goods.likeCount}</span></i>
+            <#else>
+                <i class="layui-icon layui-icon-praise" id='${gu.goods.id}'  onclick="like('${gu.goods.id}')"><span class="layui-badge-rim" id="likeCount${gu.goods.id}">${gu.goods.likeCount}</span></i>
+            </#if>
+            <#if gu.status == -1>
+                <i class="layui-icon layui-icon-tread" style="color: #3399ff;"  id='dislike${gu.goods.id}' onclick="dislike('${gu.goods.id}')"></i>
+            <#else>
+                <i class="layui-icon layui-icon-tread" style="margin-left: 20px"  id='dislike${gu.goods.id}' onclick="dislike('${gu.goods.id}')"></i>
+            </#if>
             <i class="layui-icon layui-icon-reply-fill" style="margin-left: 20px;font-size: 24px"><span class="layui-badge-rim">${gu.goods.commentCount}</span></i>
         </div>
     </div>
@@ -92,7 +100,6 @@
 <div style="margin-bottom: 60px">
 </div>
 
-
 <script src="/static/layui/layui.js"></script>
 <script>
     //注意：折叠面板 依赖 element 模块，否则无法进行功能性操作
@@ -117,10 +124,11 @@
             if(xhr.readyState === 4 && xhr.status === 200){
                 window.location.reload(true);
             }
-        }
+        };
         //window.open('http://localhost:8080/market/goods/detail/' + goodsId, '_self');
         return false;
     }
+
     function logout() {
         var xhr = new XMLHttpRequest();
         xhr.open('GET','http://localhost:8080/market/user/logout',true);
@@ -128,6 +136,43 @@
         xhr.onreadystatechange = function () {
             if(xhr.readyState === 4 && xhr.status === 200){
                 window.open('http://locahost:8080/market/homepage','_self');
+            }
+        }
+    }
+    function like(goodsId) {
+        var xhr = new XMLHttpRequest();
+        var form = new FormData();
+        var likeCount = document.getElementById('likeCount' + goodsId);
+        var dislike = document.getElementById('dislike' + goodsId);
+        var like = document.getElementById('' + goodsId);
+        form.append("goodsId", goodsId);
+        xhr.open('POST', 'http://localhost:8080/market/like', true);
+        xhr.send(form);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200){
+                var json = JSON.parse(xhr.responseText);
+                like.style.color = '#3399ff';
+                dislike.style.color = 'black';
+                likeCount.innerText = json.msg;
+            }
+        }
+    }
+
+    function dislike(goodsId) {
+        var xhr = new XMLHttpRequest();
+        var form = new FormData();
+        var like = document.getElementById('' + goodsId);
+        var dislike = document.getElementById('dislike' + goodsId);
+        var likeCount = document.getElementById('likeCount' + goodsId);
+        form.append("goodsId", goodsId);
+        xhr.open('POST', 'http://localhost:8080/market/dislike', true);
+        xhr.send(form);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200){
+                var json = JSON.parse(xhr.responseText);
+                dislike.style.color = '#3399ff';
+                like.style.color = 'black';
+                likeCount.innerText = json.msg;
             }
         }
     }

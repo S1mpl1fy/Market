@@ -66,6 +66,10 @@ public class GoodsService {
         return "forward:index";
     }
 
+    public int updateStatus(int goodsId, int likeCount){
+        return goodsDAO.updateLikeCount(goodsId, likeCount);
+    }
+
     public Goods getGoodsById(int id){
         return goodsDAO.getGoodsById(id);
     }

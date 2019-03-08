@@ -58,7 +58,7 @@ public class UserController {
 
             map.put("name",mail);
             map.put("head_url",head_url);
-            return "forward:index";
+            return "forward:goods";
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }

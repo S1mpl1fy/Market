@@ -31,7 +31,7 @@ public interface GoodsDAO {
     @Update({"update ", TABLE_NAME, " set comment_count = comment_count + 1 where id = #{id}"})
     int updateCommentCount(int id);
 
-    @Update({"update ", TABLE_NAME, " set like_count = like_count + 1 where id = #{id}"})
-    int updateLikeCount(int id);
+    @Update({"update ", TABLE_NAME, " set like_count = #{likeCount} where id = #{goodsId}"})
+    int updateLikeCount(@Param("goodsId") int goodsId, @Param("likeCount") int likeCount);
 
 }

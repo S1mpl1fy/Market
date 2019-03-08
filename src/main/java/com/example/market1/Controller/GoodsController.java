@@ -1,10 +1,7 @@
 package com.example.market1.Controller;
 
 import com.example.market1.Model.*;
-import com.example.market1.Service.CommentService;
-import com.example.market1.Service.GoodsService;
-import com.example.market1.Service.TicketService;
-import com.example.market1.Service.UserService;
+import com.example.market1.Service.*;
 import com.example.market1.Utils.MarketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +32,9 @@ public class GoodsController {
 
     @Autowired
     HostHolder hostHolder;
+
+    @Autowired
+    LikeService likeService;
 
     @RequestMapping(path = {"/uploadImage/"}, method = {RequestMethod.POST})
     @ResponseBody
@@ -80,6 +80,11 @@ public class GoodsController {
 
     @RequestMapping("/market/goods/detail/{goodsId}")
     public String goodsDetailPage(@PathVariable("goodsId") int goodsId, HttpServletRequest request, Model model){
+        User localUser = hostHolder.getUser();
+        if(localUser == null){
+            return "forward:homepage";
+        }
+
         Goods goods = goodsService.getGoodsById(goodsId);
         User user = userService.getUserById(goods.getUserId());
 
@@ -87,11 +92,41 @@ public class GoodsController {
         Map<String, Object> gu = new HashMap<>();
         gu.put("goods", goods);
         gu.put("user", user);
+        gu.put("status", likeService.getLikeStatus(localUser.getId(), EntityType.ENTITY_GOODS, goodsId));
         model.addAttribute("gu", gu);
 
         //加载评论
         List<CommentViewModel> cvmList = commentService.getCommentByGoodsId(goodsId);
         model.addAttribute("cus",cvmList);
         return "good_detail";
+    }
+
+    @RequestMapping("/market/goods")
+    public String index(HttpServletRequest request, Map<String, Object> map){
+        if(hostHolder.getUser() == null){
+            return "forward:homepage";
+        }
+        User localUser = hostHolder.getUser();
+
+        String page = request.getParameter("page");
+        int start = 0, end = 10;
+        if(page != null){
+            end = Integer.parseInt(page) * 10;
+            start = end - 10;
+        }
+        //System.out.println("/market/index " + start + " " + end);
+
+        List<ViewObject> gvm = new ArrayList<>();
+        List<Goods> goodsList = goodsService.getLatestGoods(start, end);
+        for(Goods goods: goodsList){
+            User user = userService.getUserById(goods.getUserId());
+            ViewObject viewObject = new ViewObject();
+            viewObject.set("user", user);
+            viewObject.set("goods", goods);
+            viewObject.set("like", likeService.getLikeStatus(localUser.getId(),  EntityType.ENTITY_GOODS, goods.getId()));
+            gvm.add(viewObject);
+        }
+        map.put("gvm",gvm);
+        return "goods";
     }
 }

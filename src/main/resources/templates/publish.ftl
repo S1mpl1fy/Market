@@ -8,7 +8,7 @@
 <body style="background-color: #f2f2f2">
 <div>
     <ul class="layui-nav">
-        <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/index">在售商品</a></li>
+        <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/goods">在售商品</a></li>
         <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
         <li class="layui-nav-item">
             <#if user??>
@@ -102,7 +102,7 @@
             xhr.send(temp);
             xhr.onload = function() {
                 //window.location.reload();
-                window.open('http://127.0.0.1:8080/market/index','_self');
+                window.open('http://127.0.0.1:8080/market/goods','_self');
             };
             return false;
         })

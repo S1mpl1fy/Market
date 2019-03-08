@@ -25,6 +25,7 @@ public class CommentController {
             return MarketUtils.getJSONString(-1,"false");
         }
         commentService.addComment(Integer.parseInt(userId), Integer.parseInt(goodsId), content, new Date());
+
         return MarketUtils.getJSONString(0,"ok");
     }
 

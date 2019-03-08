@@ -48,7 +48,6 @@ public class PassportInterceptor implements HandlerInterceptor {
             if(ticketLogin == null || ticketLogin.getExpired().before(new Date()) || ticketLogin.getStatus() == 1){
                 return true;
             }
-            //MyTools.log("Ticketlogin in use.");
             User user = userDAO.getUserById(ticketLogin.getUserid());
             MyTools.log("User got by ticket:" + user.getMail());
             hostHolder.setUser(user);
