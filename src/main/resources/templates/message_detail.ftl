@@ -9,13 +9,13 @@
 <div>
     <ul class="layui-nav">
         <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/goods">在售商品</a></li>
-        <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
+        <li class="layui-nav-item"><a href="/market/user/#{user.id}">个人中心</a></li>
         <li class="layui-nav-item"><a href="/market/publish">发布商品</a></li>
         <li class="layui-nav-item">
             <#if user??>
-                <a href="/market/homepage"><img src="${user.headUrl}"" class="layui-nav-img">${user.mail}</a>
+                <a href="/market/user/#{user.id}"><img src="${user.headUrl}"" class="layui-nav-img">${user.mail}</a>
             <#else >
-                <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
+                <a href="/market/user/#{user.id}"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
             </#if>
             <dl class="layui-nav-child">
                 <dd><a href="javascript:;">修改信息</a></dd>
@@ -62,6 +62,16 @@
             </div>
             <div class="layui-col-md11" style="padding-top: 12px">
             ${vo["message"].content}
+            <#if vo["fromId"] == 10 && vo["toId"] == user.id && vo["ext"]?? && vo["transaction"]??>
+                <#if vo["transaction"].status == 0>
+                    <button class="layui-btn" onclick="dealComplete('${vo["ext"]}')">完成交易</button>
+                    <button class="layui-btn" onclick="cancelDeal('${vo["ext"]}')">取消交易</button>
+                <#elseif vo["transaction"].status == 1>
+                    <p style="color: darkred;">交易已完成</p>
+                <#else >
+                    <p style="color: darkred;">交易已取消</p>
+                </#if>
+            </#if>
             </div>
             </div>
             </div>
@@ -113,6 +123,39 @@
             }
         };
         return false;
+    }
+
+    function dealComplete(trId) {
+        var form = new FormData();
+        console.log(trId);
+        form.append('trId', trId);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST','http://localhost:8080/market/goods/deal/complete',true);
+        xhr.send(form);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200){
+                var json = JSON.parse(xhr.responseText);
+                console.log(json);
+                if (json.code === 0)
+                    window.location.reload(true);
+            }
+        }
+    }
+
+    function cancelDeal(trId) {
+        var form = new FormData();
+        form.append('trId', trId);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST','http://localhost:8080/market/goods/deal/cancel',true);
+        xhr.send(form);
+        xhr.onreadystatechange = function () {
+            if(xhr.readyState === 4 && xhr.status === 200){
+                var json = JSON.parse(xhr.responseText);
+                console.log(json);
+                if (json.code === 0)
+                    window.location.reload(true);
+            }
+        }
     }
 </script>
 </body>

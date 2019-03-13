@@ -9,12 +9,12 @@
 <div>
     <ul class="layui-nav">
         <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/goods">在售商品</a></li>
-        <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
+        <li class="layui-nav-item"><a href="/market/user/#{user.id}">个人中心</a></li>
         <li class="layui-nav-item">
             <#if user??>
-                <a href="/market/homepage"><img src="${user.headUrl}" class="layui-nav-img">${user.mail}</a>
+                <a href="/market/user/#{user.id}"><img src="${user.headUrl}" class="layui-nav-img">${user.mail}</a>
             <#else>
-                <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
+                <a href="/market/user/#{user.id}"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
             </#if>
             <dl class="layui-nav-child">
                 <dd><a href="javascript:;">修改信息</a></dd>
@@ -130,7 +130,7 @@
         xhr.send(null);
         xhr.onreadystatechange = function () {
             if(xhr.readyState === 4 && xhr.status === 200){
-                window.open('http://localhost:8080/market/homepage','_self');
+                window.open('http://localhost:8080/market/login','_self');
             }
         }
     }

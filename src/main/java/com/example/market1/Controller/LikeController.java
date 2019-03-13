@@ -28,7 +28,7 @@ public class LikeController {
     @ResponseBody
     public String like(@Param("goodsId") int goodsId, HttpServletRequest request){
         long likeCount = likeService.like(hostHolder.getUser().getId(), EntityType.ENTITY_GOODS, goodsId);
-        goodsService.updateStatus(goodsId, (int)likeCount);
+        goodsService.updateLikeCount(goodsId, (int)likeCount);
         return MarketUtils.getJSONString(0,String.valueOf(likeCount));
     }
 
@@ -36,7 +36,7 @@ public class LikeController {
     @ResponseBody
     public String dislike(@Param("goodsId") int goodsId, HttpServletRequest request){
         long likeCount = likeService.dislike(hostHolder.getUser().getId(), EntityType.ENTITY_GOODS, goodsId);
-        goodsService.updateStatus(goodsId, (int)likeCount);
+        goodsService.updateLikeCount(goodsId, (int)likeCount);
         return MarketUtils.getJSONString(0,String.valueOf(likeCount));
     }
 }

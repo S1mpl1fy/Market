@@ -19,13 +19,13 @@ public interface GoodsDAO {
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where id=#{id}"})
     Goods getGoodsById(int id);
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where userid = #{userid} limit #{start}, #{end}"})
-    List<Goods> getPersonalGoods(@Param("userid") int userid, @Param("start") int start, @Param("end") int end);
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where user_id=#{userId} and status != 1"})
+    List<Goods> getGoodsByUserId(int userId);
 
-    @Select({"select count(*) from ", TABLE_NAME})
+    @Select({"select count(*) from ", TABLE_NAME, " where status = 0"})
     Goods getGoodsCount();
 
-    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " order by id desc limit #{start}, #{end}"})
+    @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME, " where status = 0 order by id desc limit #{start}, #{end}"})
     List<Goods> getLatestGoods(@Param("start") int start, @Param("end") int end);
 
     @Update({"update ", TABLE_NAME, " set comment_count = comment_count + 1 where id = #{id}"})
@@ -34,4 +34,9 @@ public interface GoodsDAO {
     @Update({"update ", TABLE_NAME, " set like_count = #{likeCount} where id = #{goodsId}"})
     int updateLikeCount(@Param("goodsId") int goodsId, @Param("likeCount") int likeCount);
 
+    @Update({"update ", TABLE_NAME, " set status = 1 where id = #{goodsId}"})
+    int deleteGoodsById(@Param("goodsId") int goodsId);
+
+    @Update({"update ", TABLE_NAME, " set status = #{status} where id = #{goodsId}"})
+    int updateStatus(@Param("goodsId") int goodsId, @Param("status") int status);
 }

@@ -1,6 +1,7 @@
 package com.example.market1.Controller;
 
 import com.example.market1.Model.*;
+import com.example.market1.Service.GoodsService;
 import com.example.market1.Service.TicketService;
 import com.example.market1.Service.UserService;
 import com.example.market1.Utils.MarketUtils;
@@ -13,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("/market")
@@ -26,6 +24,12 @@ public class UserController {
 
     @Autowired
     TicketService ticketService;
+
+    @Autowired
+    GoodsService goodsService;
+
+    @Autowired
+    HostHolder hostHolder;
 
     @RequestMapping("/register")
     public String registerPage(Map<String, Object> map){
@@ -64,25 +68,25 @@ public class UserController {
         }
     }
 
-    @RequestMapping("/homepage")
+    @RequestMapping("/login")
     public String login(Map<String, Object> map, HttpServletRequest request){
         map.put("name", "未登录");
         map.put("passMsg", "请输入");
-        return "homepage";
+        return "login";
     }
 
-    @RequestMapping(value = "/homepage.jspy",method = {RequestMethod.POST})
+    @RequestMapping(value = "/login.jspy",method = {RequestMethod.POST})
     public String loginSubmit(@ModelAttribute("form")LoginForm loginForm, Map<String, Object> map, HttpServletResponse response, HttpServletRequest request)throws Exception{
 
         try{
-            System.out.println("homepage.jspy");
+            System.out.println("login.jspy");
             User user;
             String mail = loginForm.getMail(), pass = loginForm.getPass();
             String salt = userService.getSaltByMail(mail);
             String savePass = userService.getPassByMail(mail);
             String mdPass = MyTools.getMD5(pass + salt);
             if(!mdPass.equals(savePass)){
-                return "homepage";
+                return "login";
             }
             Date date = new Date();
             date.setTime(date.getTime() + 1000*3600*120);
@@ -100,7 +104,7 @@ public class UserController {
             user = userService.getUserByMail(mail);
             map.put("name", mail);
             map.put("head_url", user.getHeadUrl());
-            return "homepage";
+            return "personal_page";
         }catch (Exception e){
             throw new Exception(e.getMessage());
         }
@@ -122,8 +126,16 @@ public class UserController {
 
     @RequestMapping("/user/{id}")
     public String personalPage(@PathVariable("id") int id, HttpServletRequest request, Model model){
+        if(hostHolder.getUser() == null){
+            return "forward:login";
+        }
+
         User user = userService.getUserById(id);
         model.addAttribute("target", user);
+
+        List<Goods> goodsList = goodsService.getGoodsByUserId(id);
+        model.addAttribute("goodsList", goodsList);
+
         return "personal_page";
     }
 }

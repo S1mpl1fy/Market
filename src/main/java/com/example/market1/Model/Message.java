@@ -8,6 +8,27 @@ public class Message {
     int toId;
     String conversationId;
 
+    public String getExt() {
+        return ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
+    }
+
+    String ext;
+
+    public Message(){}
+
+    public Message(int fromId, int toId, String content, Date createdDate, String conversationId, String ext){
+        this.fromId = fromId;
+        this.toId = toId;
+        this.createdDate = createdDate;
+        this.content = content;
+        this.conversationId = conversationId;
+        this.ext = ext;
+    }
+
     public int getHasRead() {
         return hasRead;
     }

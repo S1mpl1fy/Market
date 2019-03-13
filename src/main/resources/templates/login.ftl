@@ -12,11 +12,7 @@
             <li class="layui-nav-item"><a href="">个人中心</a></li>
             <li class="layui-nav-item"><a href="/market/publish">发布商品</a></li>
             <li class="layui-nav-item">
-                <#if user??>
-                    <a href="/market/homepage"><img src="${user.headUrl}"" class="layui-nav-img">${user.mail}</a>
-                <#else >
-                    <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
-                </#if>
+                <a href="/market/login"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">修改信息</a></dd>
                     <dd><a href="/market/msg/list">站内信</a></dd>
@@ -99,7 +95,7 @@
             console.log(data.elem);
             var temp = new FormData(data.elem);
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/market/homepage.jspy', true);
+            xhr.open('POST', '/market/login.jspy', true);
             xhr.send(temp);
             xhr.onload = function() {
                 //window.location.reload();

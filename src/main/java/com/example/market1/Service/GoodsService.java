@@ -1,8 +1,7 @@
 package com.example.market1.Service;
 
-import com.example.market1.DAO.GoodsDAO;
-import com.example.market1.DAO.TicketDAO;
-import com.example.market1.DAO.UserDAO;
+import com.alibaba.fastjson.JSON;
+import com.example.market1.DAO.*;
 import com.example.market1.Model.*;
 import com.example.market1.Utils.MarketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +20,22 @@ import java.util.*;
 @Service
 public class GoodsService {
     @Autowired
+    UserDAO userDAO;
+
+    @Autowired
     GoodsDAO goodsDAO;
 
     @Autowired
     TicketDAO ticketDAO;
+
+    @Autowired
+    MessageDAO messageDAO;
+
+    @Autowired
+    TransactionDAO transactionDAO;
+
+    @Autowired
+    MessageService messageService;
 
     public String saveImage(MultipartFile file) throws IOException {
         int dotPos = file.getOriginalFilename().lastIndexOf(".");
@@ -66,8 +77,12 @@ public class GoodsService {
         return "forward:index";
     }
 
-    public int updateStatus(int goodsId, int likeCount){
+    public int updateLikeCount(int goodsId, int likeCount){
         return goodsDAO.updateLikeCount(goodsId, likeCount);
+    }
+
+    public List<Goods> getGoodsByUserId(int userId){
+        return goodsDAO.getGoodsByUserId(userId);
     }
 
     public Goods getGoodsById(int id){
@@ -76,5 +91,47 @@ public class GoodsService {
 
     public List<Goods> getLatestGoods(int start, int end){
         return goodsDAO.getLatestGoods(start, end);
+    }
+
+    public int deleteGoodsById(int goodsId){
+        return goodsDAO.deleteGoodsById(goodsId);
+    }
+
+    public String dealGoods(int userId, int ownerId, int goodsId, int transactionId){
+
+        String conversationId = (userId < ownerId ? String.format("%d_%d", userId, ownerId) : String.format("%d_%d", ownerId, userId));
+
+        goodsDAO.updateStatus(goodsId, 2);
+        String ext = String.valueOf(transactionDAO.getTransactionByGoods(goodsId).getId());
+        return messageService.addMessage(10, ownerId, "用户" + userDAO.getNameById(userId) +
+                "已经拍下了用户"+ userDAO.getNameById(ownerId) +"的商品: " + goodsDAO.getGoodsById(goodsId).getTitle(), conversationId, ext);
+    }
+
+    public String dealGoodsComplete(int transactionId){
+        Transaction transaction  = transactionDAO.getTransaction(transactionId);
+        String conversationId = (transaction.getBuyId() < transaction.getOwnerId() ? String.format("%d_%d", transaction.getBuyId(), transaction.getOwnerId())
+                : String.format("%d_%d", transaction.getOwnerId(), transaction.getBuyId()));
+        goodsDAO.updateStatus(transaction.getGoodsId(), 3);
+
+        String ext = String.valueOf(transactionDAO.getTransactionByGoods(transactionId));
+        return messageService.addMessage(10, transaction.getOwnerId(), "用户" + userDAO.getNameById(transaction.getBuyId()) +
+                "与"+ userDAO.getNameById(transaction.getOwnerId()) +"关于商品: " + goodsDAO.getGoodsById(transaction.getGoodsId()).getTitle() +
+                " 的交易已经完成！", conversationId, ext);
+    }
+
+    public String cancelGoodsDeal(int transactionId){
+        Transaction transaction  = transactionDAO.getTransaction(transactionId);
+        String conversationId = (transaction.getBuyId() < transaction.getOwnerId() ? String.format("%d_%d", transaction.getBuyId(), transaction.getOwnerId())
+                : String.format("%d_%d", transaction.getOwnerId(), transaction.getBuyId()));
+        goodsDAO.updateStatus(transaction.getGoodsId(), 0);
+
+        String ext = String.valueOf(transactionDAO.getTransactionByGoods(transactionId));
+        return messageService.addMessage(10, transaction.getOwnerId(), "用户" + userDAO.getNameById(transaction.getBuyId()) +
+                "与"+ userDAO.getNameById(transaction.getOwnerId()) +"关于商品: " + goodsDAO.getGoodsById(transaction.getGoodsId()).getTitle() +
+                " 的交易已经取消！", conversationId, ext);
+    }
+
+    public int updateGoodsStatus(int goodsId, int status){
+        return goodsDAO.updateStatus(goodsId, status);
     }
 }

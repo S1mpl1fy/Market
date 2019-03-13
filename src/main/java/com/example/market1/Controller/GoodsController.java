@@ -36,6 +36,9 @@ public class GoodsController {
     @Autowired
     LikeService likeService;
 
+    @Autowired
+    TransactionService transactionService;
+
     @RequestMapping(path = {"/uploadImage/"}, method = {RequestMethod.POST})
     @ResponseBody
     public String uploadImage(@RequestParam("file") MultipartFile file) {
@@ -67,7 +70,7 @@ public class GoodsController {
     @RequestMapping("/market/publish")
     public String publishPage(){
         if(hostHolder.getUser() == null){
-            return "forward:homepage";
+            return "forward:login";
         }
 
         return "publish";
@@ -82,7 +85,7 @@ public class GoodsController {
     public String goodsDetailPage(@PathVariable("goodsId") int goodsId, HttpServletRequest request, Model model){
         User localUser = hostHolder.getUser();
         if(localUser == null){
-            return "forward:homepage";
+            return "forward:login";
         }
 
         Goods goods = goodsService.getGoodsById(goodsId);
@@ -104,7 +107,7 @@ public class GoodsController {
     @RequestMapping("/market/goods")
     public String index(HttpServletRequest request, Map<String, Object> map){
         if(hostHolder.getUser() == null){
-            return "forward:homepage";
+            return "forward:login";
         }
         User localUser = hostHolder.getUser();
 
@@ -128,5 +131,47 @@ public class GoodsController {
         }
         map.put("gvm",gvm);
         return "goods";
+    }
+
+    @RequestMapping("/market/goods/delete/{goodsId}")
+    @ResponseBody
+    public String deleteGoods(@PathVariable("goodsId") int goodsId, HttpServletRequest request){
+        goodsService.deleteGoodsById(goodsId);
+        return MarketUtils.getJSONString(0);
+    }
+
+    @RequestMapping("/market/goods/deal")
+    @ResponseBody
+    public String dealGoods(@RequestParam("goodsId") int goodsId, @RequestParam("userId") int userId, HttpServletRequest request){
+        int ownerId = goodsService.getGoodsById(goodsId).getUserId();
+        int trId = transactionService.addTransation(new Transaction(ownerId, userId, goodsId, goodsService.getGoodsById(goodsId).getPrice(), 0));
+        String conversationId = goodsService.dealGoods(userId,ownerId,goodsId,trId);
+        if(conversationId == null)
+            return MarketUtils.getJSONString(-1);
+        return MarketUtils.getJSONString(0, conversationId);
+    }
+
+    @RequestMapping("/market/goods/deal/complete")
+    @ResponseBody
+    public String dealGoods(@RequestParam("trId") int transactionId,  HttpServletRequest request){
+        if(transactionService.getTransaction(transactionId).getStatus() == 1)
+            return MarketUtils.getJSONString(-1);
+        transactionService.updateTransaction(transactionId, 1);
+        String conversationId = goodsService.dealGoodsComplete(transactionId);
+        if(conversationId == null)
+            return MarketUtils.getJSONString(-1);
+        return MarketUtils.getJSONString(0, conversationId);
+    }
+
+    @RequestMapping("/market/goods/deal/cancel")
+    @ResponseBody
+    public String cancelDeal(@RequestParam("trId") int transactionId,  HttpServletRequest request){
+        if(transactionService.getTransaction(transactionId).getStatus() == 2)
+            return MarketUtils.getJSONString(-1);
+        transactionService.updateTransaction(transactionId, 2);
+        String conversationId = goodsService.cancelGoodsDeal(transactionId);
+        if(conversationId == null)
+            return MarketUtils.getJSONString(-1);
+        return MarketUtils.getJSONString(0, conversationId);
     }
 }

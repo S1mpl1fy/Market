@@ -9,13 +9,13 @@
 <div>
     <ul class="layui-nav">
         <li class="layui-nav-item" style="margin-left: 20%"><a href="/market/goods">在售商品</a></li>
-        <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
+        <li class="layui-nav-item"><a href="/market/user/#{user.id}">个人中心</a></li>
         <li class="layui-nav-item"><a href="/market/publish">发布商品</a></li>
         <li class="layui-nav-item">
             <#if user??>
-                <a href="/market/homepage"><img src="${user.headUrl}" class="layui-nav-img">${user.mail}</a>
+                <a href="/market/user/#{user.id}"><img src="${user.headUrl}" class="layui-nav-img">${user.mail}</a>
             <#else>
-                <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
+                <a href="/market/user/#{user.id}"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
             </#if>
             <dl class="layui-nav-child">
                 <dd><a href="javascript:;">修改信息</a></dd>
@@ -37,22 +37,26 @@
         <div class="layui-card-body" align="center">
             <img src="${gu.goods.image}" style="width: 560px;">
         </div>
-        <div class="layui-card-body">
+        <div class="layui-card-body" style=" font-size: 24px">
             <hr/>
-            <p style="padding: 15px;">${gu.goods.description}
+            <p>Price: ${gu.goods.price}</p><br>
+            <p>${gu.goods.description}
         </div>
         <div class="layui-card-body" style="height:30px">
             <#if gu.status == 1>
-                <i class="layui-icon layui-icon-praise" style="color: #3399ff;"  id='${gu.goods.id}'  onclick="like('${gu.goods.id}')"><span class="layui-badge-rim" id="likeCount${gu.goods.id}">${gu.goods.likeCount}</span></i>
+                <i class="layui-icon layui-icon-praise" style="color: #3399ff; font-size: 24px"  id='${gu.goods.id}'  onclick="like('${gu.goods.id}')"><span class="layui-badge-rim" id="likeCount${gu.goods.id}">${gu.goods.likeCount}</span></i>
             <#else>
-                <i class="layui-icon layui-icon-praise" id='${gu.goods.id}'  onclick="like('${gu.goods.id}')"><span class="layui-badge-rim" id="likeCount${gu.goods.id}">${gu.goods.likeCount}</span></i>
+                <i class="layui-icon layui-icon-praise" style=" font-size: 24px" id='${gu.goods.id}'  onclick="like('${gu.goods.id}')"><span class="layui-badge-rim" id="likeCount${gu.goods.id}">${gu.goods.likeCount}</span></i>
             </#if>
             <#if gu.status == -1>
-                <i class="layui-icon layui-icon-tread" style="color: #3399ff;"  id='dislike${gu.goods.id}' onclick="dislike('${gu.goods.id}')"></i>
+                <i class="layui-icon layui-icon-tread" style="color: #3399ff; font-size: 24px"  id='dislike${gu.goods.id}' onclick="dislike('${gu.goods.id}')"></i>
             <#else>
-                <i class="layui-icon layui-icon-tread" style="margin-left: 20px"  id='dislike${gu.goods.id}' onclick="dislike('${gu.goods.id}')"></i>
+                <i class="layui-icon layui-icon-tread" style="margin-left: 20px; font-size: 24px"  id='dislike${gu.goods.id}' onclick="dislike('${gu.goods.id}')"></i>
             </#if>
             <i class="layui-icon layui-icon-reply-fill" style="margin-left: 20px;font-size: 24px"><span class="layui-badge-rim">${gu.goods.commentCount}</span></i>
+            <#if user.id != gu.user.id>
+                <button class="layui-btn" style="margin-left: 20px;" onclick="deal('${gu.goods.id}')">我要拍下</button>
+            </#if>
         </div>
     </div>
     <div class="layui-card" style="margin-top: 20px">
@@ -135,7 +139,7 @@
         xhr.send(null);
         xhr.onreadystatechange = function () {
             if(xhr.readyState === 4 && xhr.status === 200){
-                window.open('http://locahost:8080/market/homepage','_self');
+                window.open('http://locahost:8080/market/login','_self');
             }
         }
     }
@@ -175,6 +179,23 @@
                 likeCount.innerText = json.msg;
             }
         }
+    }
+
+    function deal(goodsId) {
+        var temp = new FormData();
+        temp.append("userId",userId);
+        temp.append("goodsId",goodsId);
+        console.log(temp);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/market/goods/deal', true);
+        xhr.send(temp);
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState === 4 && xhr.status === 200){
+                var json = JSON.parse(xhr.responseText);
+                window.open('http://localhost:8080/market/msg/detail/'+json.msg, '_self');
+            }
+        };
+        //window.open('http://localhost:8080/market/goods/detail/' + goodsId, '_self');
     }
 </script>
 </body>

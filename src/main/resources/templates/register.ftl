@@ -12,9 +12,9 @@
             <li class="layui-nav-item"><a href="/market/homepage">个人中心</a></li>
             <li class="layui-nav-item">
                 <#if name??>
-                    <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">${name}</a>
+                    <a href="/market/user/#{user.id}"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">${name}</a>
                 <#else >
-                    <a href="/market/homepage"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
+                    <a href="/market/login"><img src="http://images.nowcoder.com/head/11t.png" class="layui-nav-img">未登录</a>
                 </#if>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">修改信息</a></dd>
